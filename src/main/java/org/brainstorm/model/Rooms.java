@@ -32,7 +32,6 @@ public class Rooms {
     @Column(length = 45)
     private LocalDateTime createdAt;
 
-    private boolean isActive;
     private Integer maxUsers;
 
     @OneToMany (mappedBy = "room", cascade = CascadeType.ALL)
