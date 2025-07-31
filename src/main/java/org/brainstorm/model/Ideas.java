@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@Builder
 @Entity
 @Data
 @AllArgsConstructor
@@ -42,5 +43,6 @@ public class Ideas {
     private Rooms room;
 
     @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<Comments> comments = new HashSet<>();
 }
