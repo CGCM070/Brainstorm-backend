@@ -23,9 +23,10 @@ public class Comments {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
-    private boolean isDeleted;
+
+    private boolean isDeleted = false;
 
     @ManyToOne
     @JoinColumn(name = "idea_id")
