@@ -27,6 +27,7 @@ public class UserService {
         return userRepository.save(users);
     }
 
+    @Transactional
     public Users updateUsername (Long id, Users users) {
         Users existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));

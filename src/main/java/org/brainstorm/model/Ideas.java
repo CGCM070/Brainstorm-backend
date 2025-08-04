@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Builder
@@ -33,8 +35,8 @@ public class Ideas {
 
     private Integer totalVotes = 0;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt ;
 
     @ManyToOne
     @JoinColumn(name = "room_id")
@@ -45,4 +47,13 @@ public class Ideas {
     @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<Comments> comments = new HashSet<>();
+
+
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "idea_voters", joinColumns = @JoinColumn(name = "idea_id"))
+    @MapKeyColumn(name = "username")
+    @Column(name = "vote_value")
+    @Builder.Default
+    private Map<String, Integer> userVotes = new HashMap<>();
 }

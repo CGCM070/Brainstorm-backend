@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rooms/")
+@RequestMapping("/v1/api/rooms")
 public class RoomController {
 
     @Autowired
     private RoomService roomService;
 
 
-    @GetMapping("all")
+    @GetMapping("/all")
     public ResponseEntity<List<Rooms>> getAllRooms() {
         List<Rooms> rooms = roomService.getAllRooms();
         return ResponseEntity.ok(rooms);
     }
 
 
-    @GetMapping("{code}")
+    @GetMapping("/{code}")
     public ResponseEntity<Rooms> getRoomByCode(@PathVariable String code) {
         Rooms room = roomService.getRoomByCode(code);
         if (room == null) {return ResponseEntity.notFound().build();}
@@ -38,7 +38,7 @@ public class RoomController {
         return new ResponseEntity<>(createRoom, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public void deleteRoom (@PathVariable Long id) {
         roomService.deleteRoom(id);
     }

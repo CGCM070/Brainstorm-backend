@@ -1,7 +1,7 @@
 package org.brainstorm.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +25,6 @@ public class Users {
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
     @ToString.Exclude
-    @JsonIgnore
+    @JsonBackReference
     private Rooms room;
 }

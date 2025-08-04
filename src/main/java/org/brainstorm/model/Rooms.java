@@ -1,5 +1,6 @@
 package org.brainstorm.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,6 +35,7 @@ public class Rooms {
 
     @OneToMany (mappedBy = "room", cascade = CascadeType.ALL)
     @Builder.Default
+    @JsonManagedReference
     Set<Users> users=  new HashSet<>();
 
     @OneToMany (mappedBy = "room", cascade = CascadeType.ALL)
