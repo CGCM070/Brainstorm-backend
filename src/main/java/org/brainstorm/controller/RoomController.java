@@ -34,7 +34,7 @@ public class RoomController {
 
     @PostMapping("")
     public ResponseEntity<Rooms> createRoom (@RequestBody @Valid Rooms rooms) {
-        Rooms createRoom = roomService.createRoom(rooms);
+        Rooms createRoom = roomService.save(rooms);
         return new ResponseEntity<>(createRoom, HttpStatus.CREATED);
     }
 

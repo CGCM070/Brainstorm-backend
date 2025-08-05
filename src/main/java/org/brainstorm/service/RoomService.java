@@ -25,10 +25,7 @@ public class RoomService {
 
 
     @Transactional
-    public Rooms createRoom ( Rooms rooms){
-        if (roomsRepository.findByCode(rooms.getCode()).isPresent()) {
-            throw  new RuntimeException( "Sala ya registrada");
-        }
+    public Rooms save ( Rooms rooms){
         return roomsRepository.save(rooms);
     }
 
