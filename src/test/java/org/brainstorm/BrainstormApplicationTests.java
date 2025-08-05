@@ -13,7 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest
+
+@SpringBootTest(properties = "spring.profiles.active=test")
 class BrainstormApplicationTests {
 
     @Autowired
@@ -38,8 +39,8 @@ class BrainstormApplicationTests {
     private CommentService commentService;
 
     @Test
-    void createRoomWithIdeasAndComments() {
-        transactionTemplate.executeWithoutResult(transactionStatus -> {
+    void creandoSala_ConUsuarios() {
+
             Rooms room = Rooms.builder()
                     .createdBy("admin")
                     .maxUsers(30)
@@ -67,13 +68,18 @@ class BrainstormApplicationTests {
 
             // Guardar la sala (esto también guardará los usuarios debido a CascadeType.ALL)
             roomService.save(room);
-
+        transactionTemplate.executeWithoutResult(transactionStatus -> {
             // Verificar que los usuarios están en la sala
             assertTrue(room.getUsers().contains(user1));
             assertTrue(room.getUsers().contains(user2));
 
 
         });
+
+    }
+
+    @Test
+    void test () {
 
     }
 }
