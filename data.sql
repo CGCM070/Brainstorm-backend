@@ -22,14 +22,13 @@ INSERT INTO ideas (title, description, author, total_votes, created_at, updated_
                                                                                                  ('Chat integrado', 'Añadir funcionalidad de chat dentro de las salas', 'eve', 2, NOW(), NOW(), 2),
                                                                                                  ('Modo oscuro', 'Implementar tema oscuro para la aplicación', 'frank', 1, NOW(), NOW(), 3);
 
--- Insertar COMMENTS
-INSERT INTO comments (author_username, content, created_at, updated_at, is_deleted, idea_id) VALUES
-                                                                                                 ('bob', 'Excelente idea, me parece muy necesario', NOW(), NOW(), 0, 1),
-                                                                                                 ('charlie', 'Podríamos usar Material Design', NOW(), NOW(), 0, 1),
-                                                                                                 ('alice', '¿Qué tecnología usaríamos?', NOW(), NOW(), 0, 2),
-                                                                                                 ('diana', 'Firebase sería una buena opción', NOW(), NOW(), 0, 2),
-                                                                                                 ('eve', 'React Native o Flutter?', NOW(), NOW(), 0, 3),
-                                                                                                 ('alice', 'Me gusta más Flutter', NOW(), NOW(), 0, 3),
-                                                                                                 ('frank', 'Socket.io funcionaría bien para esto', NOW(), NOW(), 0, 4),
-                                                                                                 ('diana', 'También podríamos usar WebRTC', NOW(), NOW(), 0, 4),
-                                                                                                 ('alice', 'Muy buena idea para la vista nocturna', NOW(), NOW(), 0, 5);
+INSERT INTO comments (author_username, content, created_at, updated_at, idea_id) VALUES
+                                                                                     ('bob',     'Excelente idea, me parece muy necesario',  NOW(), NOW(), 1),
+                                                                                     ('charlie','Podríamos usar Material Design',           NOW(), NOW(), 1),
+                                                                                     ('alice',  '¿Qué tecnología usaríamos?',               NOW(), NOW(), 2),
+                                                                                     ('diana',  'Firebase sería una buena opción',          NOW(), NOW(), 2),
+                                                                                     ('eve',    'React Native o Flutter?',                  NOW(), NOW(), 3),
+                                                                                     ('alice',  'Me gusta más Flutter',                     NOW(), NOW(), 3),
+                                                                                     ('frank',  'Socket.io funcionaría bien para esto',     NOW(), NOW(), 4),
+                                                                                     ('diana',  'También podríamos usar WebRTC',            NOW(), NOW(), 4),
+                                                                                     ('alice',  'Muy buena idea para la vista nocturna',    NOW(), NOW(), 5);

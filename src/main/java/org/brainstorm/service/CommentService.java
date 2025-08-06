@@ -42,6 +42,12 @@ public class CommentService {
                 () -> new EntityNotFoundException("No se ha encontrado el usuario con id : " + userID)
         );
 
+        Long ideaRoomId = idea.getRoom().getId();
+        Long userRoomId = user.getRoom().getId();
+        if (!ideaRoomId.equals(userRoomId)) {
+            throw new IllegalArgumentException("El usuario no pertenece a la sala de la idea");
+        }
+
         comment.setAuthorUsername(user.getUsername());
         comment.setIdea(idea);
         idea.getComments().add(comment);
