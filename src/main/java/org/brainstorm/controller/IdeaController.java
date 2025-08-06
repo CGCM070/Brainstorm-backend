@@ -22,9 +22,11 @@ public class IdeaController {
         return ideaService.getAllIdeas(pageable);
     }
 
-    @PostMapping("")
-    public ResponseEntity< Ideas> createIdea( @RequestBody @Valid Ideas idea) {
-        Ideas createdIdea = ideaService.createIdea(idea);
+    @PostMapping("/rooms/{roomId}")
+    public ResponseEntity< Ideas> saveIdea(@RequestBody @Valid Ideas idea,
+                                           @RequestParam String authorUsername,
+                                           @PathVariable Long roomId) {
+        Ideas createdIdea = ideaService.createIdea(idea,authorUsername,roomId);
         return  new ResponseEntity<>(createdIdea, HttpStatus.CREATED);
     }
 

@@ -39,6 +39,13 @@ public class CommentController {
         Comments createdComment = commentService.createComment(comment);
         return ResponseEntity.status(201).body(createdComment);
     }
+    @PostMapping("/user/{userId}/idea/{ideaId}")
+    public ResponseEntity<Comments> createCommentOnIdea( @PathVariable Long ideaId ,
+                                                         @PathVariable Long userId ,
+                                                         @RequestBody @Valid  Comments comment) {
+        Comments createdComment = commentService.createCommentOnIdea(ideaId,userId,comment);
+        return ResponseEntity.status(201).body(createdComment);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Comments> updateComment(@PathVariable Long id, @RequestBody  @Valid  Comments comment) {

@@ -38,15 +38,17 @@ public class Ideas {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt ;
 
+    @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<Comments> comments = new HashSet<>();
+
     @ManyToOne
     @JoinColumn(name = "room_id")
     @ToString.Exclude
     @JsonIgnore
     private Rooms room;
 
-    @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private Set<Comments> comments = new HashSet<>();
+
 
 
 

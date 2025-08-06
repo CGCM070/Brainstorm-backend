@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-
+@Builder
 @Entity
 @Data
 @AllArgsConstructor
