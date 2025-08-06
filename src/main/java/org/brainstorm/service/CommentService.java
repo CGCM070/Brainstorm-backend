@@ -1,5 +1,6 @@
 package org.brainstorm.service;
 
+import jakarta.transaction.Transactional;
 import org.brainstorm.exception.EntityNotFoundException;
 import org.brainstorm.model.Comments;
 import org.brainstorm.model.Ideas;
@@ -10,6 +11,7 @@ import org.brainstorm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -30,10 +32,8 @@ public class CommentService {
         return commentRepository.findByIdeaId(ideaId);
     }
 
-    public Comments createComment(Comments comment) {
-        return commentRepository.save(comment);
-    }
 
+    @Transactional
     public Comments createCommentOnIdea(Long ideaID, Long userID, Comments comment) {
         Ideas idea = ideaRepository.findById(ideaID).orElseThrow(
                 () -> new EntityNotFoundException("No se ha encontrado la idea con id : " + ideaID)
@@ -48,20 +48,34 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-
-    public Comments updateComment(Long id, Comments comment) {
+    @Transactional
+    public Comments updateComment(Long id,Long userId, Comments comment) {
         Comments existingComment = commentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + id));
 
+        Users user = userRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException("No se ha encontrado el usuario con id : " + userId)
+        );
+        if (!existingComment.getAuthorUsername().equalsIgnoreCase(user.getUsername())) {
+            throw new IllegalArgumentException("No puedes editar un comentario que no te pertence");
+        }
         existingComment.setContent(comment.getContent());
-        existingComment.setUpdatedAt(comment.getUpdatedAt());
+        existingComment.setUpdatedAt(LocalDateTime.now());
         return commentRepository.save(existingComment);
     }
 
-    public void deleteComment(Long id) {
-        if (!commentRepository.existsById(id)) {
-            throw new EntityNotFoundException("Comment not found with id: " + id);
+    @Transactional
+    public void deleteComment(Long id, Long userID) {
+        Comments existingComment = commentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + id));
+
+        Users user = userRepository.findById(userID).orElseThrow(
+                () -> new EntityNotFoundException("No se ha encontrado el usuario con id : " + userID)
+        );
+        if (!existingComment.getAuthorUsername().equalsIgnoreCase(user.getUsername())) {
+            throw new IllegalArgumentException("No puedes borrar un comentario que no te pertence");
         }
+
         commentRepository.deleteById(id);
     }
 }

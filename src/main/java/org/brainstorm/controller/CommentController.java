@@ -34,11 +34,6 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
-    @PostMapping("")
-    public ResponseEntity<Comments> createComment(@RequestBody @Valid  Comments comment) {
-        Comments createdComment = commentService.createComment(comment);
-        return ResponseEntity.status(201).body(createdComment);
-    }
     @PostMapping("/user/{userId}/idea/{ideaId}")
     public ResponseEntity<Comments> createCommentOnIdea( @PathVariable Long ideaId ,
                                                          @PathVariable Long userId ,
@@ -47,15 +42,15 @@ public class CommentController {
         return ResponseEntity.status(201).body(createdComment);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Comments> updateComment(@PathVariable Long id, @RequestBody  @Valid  Comments comment) {
-        Comments updatedComment = commentService.updateComment(id, comment);
+    @PutMapping("/{id}/user/{userId}")
+    public ResponseEntity<Comments> updateComment(@PathVariable Long userId, @PathVariable Long id, @RequestBody  @Valid  Comments comment) {
+        Comments updatedComment = commentService.updateComment(id, userId, comment);
         return ResponseEntity.ok(updatedComment);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
-        commentService.deleteComment(id);
+    @DeleteMapping("/{id}/user/{userId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id, @PathVariable Long userId) {
+        commentService.deleteComment(id, userId);
         return ResponseEntity.ok().build();
     }
 }

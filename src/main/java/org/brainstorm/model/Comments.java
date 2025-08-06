@@ -26,7 +26,6 @@ public class Comments {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 
-    private boolean isDeleted = false;
 
     @ManyToOne
     @JoinColumn(name = "idea_id")

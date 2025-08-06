@@ -40,15 +40,17 @@ public class IdeaController {
     }
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Ideas> updateIdea(@PathVariable Long id, @RequestBody @Valid Ideas idea) {
-        Ideas updatedIdea = ideaService.updateIdea(id, idea);
+    @PutMapping("/{id}/user/{userId}")
+    public ResponseEntity<Ideas> updateIdea(@PathVariable Long id,
+                                            @PathVariable Long userId,
+                                            @RequestBody @Valid Ideas idea) {
+        Ideas updatedIdea = ideaService.updateIdea(id, userId,idea);
         return new ResponseEntity<>(updatedIdea, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteIdea(@PathVariable Long id) {
-        ideaService.deleteIdea(id);
+    @DeleteMapping("/{id}/user/{userId}")
+    public void deleteIdea(@PathVariable Long id, @PathVariable Long userId) {
+        ideaService.deleteIdea(id, userId);
         ResponseEntity.status(HttpStatus.OK);
     }
 

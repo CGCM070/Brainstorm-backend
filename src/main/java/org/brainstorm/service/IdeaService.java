@@ -4,8 +4,10 @@ import jakarta.transaction.Transactional;
 import org.brainstorm.exception.EntityNotFoundException;
 import org.brainstorm.model.Ideas;
 import org.brainstorm.model.Rooms;
+import org.brainstorm.model.Users;
 import org.brainstorm.repository.IdeaRepository;
 import org.brainstorm.repository.RoomsRepository;
+import org.brainstorm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,8 @@ public class IdeaService {
     private IdeaRepository ideaRepository;
     @Autowired
     private RoomsRepository roomsRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public Page<Ideas> getAllIdeas(Pageable pageable) {
         return ideaRepository.findAll(pageable);
@@ -45,9 +49,18 @@ public class IdeaService {
     }
 
     @Transactional
-    public Ideas updateIdea(Long id, Ideas idea) {
+    public Ideas updateIdea(Long id, Long userId, Ideas idea) {
         Ideas existingIdea = ideaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Idea not found with id: " + id));
+
+        Users user = userRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException("No se ha encotrado el usuario con id : " + userId)
+        );
+
+        if (!existingIdea.getAuthor().equalsIgnoreCase(user.getUsername())) {
+            throw  new IllegalArgumentException("No puedes actualizar una idea que no te pertenece");
+        }
+
         existingIdea.setTitle(idea.getTitle());
         existingIdea.setDescription(idea.getDescription());
         existingIdea.setUpdatedAt(LocalDateTime.now());
@@ -55,10 +68,18 @@ public class IdeaService {
     }
 
     @Transactional
-    public void deleteIdea(Long id) {
-        if (!ideaRepository.existsById(id)) {
-            throw new EntityNotFoundException("Idea not found with id: " + id);
+    public void deleteIdea(Long id, Long userId) {
+        Ideas existingIdea = ideaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Idea not found with id: " + id));
+
+        Users user = userRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException("No se ha encotrado el usuario con id : " + userId)
+        );
+
+        if (!existingIdea.getAuthor().equalsIgnoreCase(user.getUsername())) {
+            throw  new IllegalArgumentException("No puedes eliminar una idea que no te pertenece");
         }
+
         ideaRepository.deleteById(id);
     }
 
