@@ -84,14 +84,14 @@ public class IdeaService {
     }
 
     @Transactional
-    public void votarIdea(Long id, String username, int value){
+    public void votarIdea(Long ideaId, String username, int value){
 
         if (value != 1 && value != -1) {
             throw new IllegalArgumentException("El valor de voto debe ser 1 o -1");
         }
 
-        Ideas idea = ideaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Idea not found with id: " + id));
+        Ideas idea = ideaRepository.findById(ideaId)
+                .orElseThrow(() -> new EntityNotFoundException("Idea not found with id: " + ideaId));
         Integer previousVote = idea.getUserVotes().get(username);
         if (previousVote != null) {
             // Resta el voto anterior

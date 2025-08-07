@@ -2,6 +2,7 @@ package org.brainstorm.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,9 @@ public class Rooms {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
+
+    @NotBlank
+    private String title ;
 
     @Column(length = 6)
     private String code ;

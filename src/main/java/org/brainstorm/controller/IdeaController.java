@@ -23,7 +23,7 @@ public class IdeaController {
     }
 
     @PostMapping("/rooms/{roomId}")
-    public ResponseEntity< Ideas> saveIdea(@RequestBody @Valid Ideas idea,
+    public ResponseEntity< Ideas> createIdea(@RequestBody @Valid Ideas idea,
                                            @RequestParam String authorUsername,
                                            @PathVariable Long roomId) {
         Ideas createdIdea = ideaService.createIdea(idea,authorUsername,roomId);

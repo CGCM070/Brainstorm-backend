@@ -33,6 +33,7 @@ public class Ideas {
     @Column(length = 45)
     private String author;
 
+    @Builder.Default
     private Integer totalVotes = 0;
 
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -47,10 +48,6 @@ public class Ideas {
     @ToString.Exclude
     @JsonIgnore
     private Rooms room;
-
-
-
-
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "idea_voters", joinColumns = @JoinColumn(name = "idea_id"))

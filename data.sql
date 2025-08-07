@@ -1,9 +1,9 @@
 use brainstorm_db;
 -- Insertar ROOMS
-INSERT INTO rooms (code, created_by, created_at, max_users) VALUES
-                                                                ('ABC123', 'admin', NOW(), 10),
-                                                                ('XYZ789', 'manager', NOW(), 15),
-                                                                ('DEF456', 'user1', NOW(), 8);
+INSERT INTO rooms (title, code, created_by, created_at, max_users) VALUES
+                                                                       ('Sala Principal', 'ABC123', 'admin', NOW(), 10),
+                                                                       ('Sala de Gestión', 'XYZ789', 'manager', NOW(), 15),
+                                                                       ('Sala de Usuarios', 'DEF456', 'user1', NOW(), 8);
 
 -- Insertar USERS
 INSERT INTO users (username, is_online, room_id) VALUES

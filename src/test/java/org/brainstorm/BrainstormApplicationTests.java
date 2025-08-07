@@ -15,8 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(properties = "spring.profiles.active=test")
 class BrainstormApplicationTests {
@@ -208,6 +207,70 @@ class BrainstormApplicationTests {
                             .anyMatch(c -> c.getId().equals(saved.getId()))
             );
 
+        });
+    }
+
+    @Test
+    void createUserAndOwnRoom_othersJoin() {
+
+        transactionTemplate.executeWithoutResult(transactionStatus -> {
+            Users user = Users.builder()
+                    .username("Tachanka")
+                    .isOnline(true)
+                    .build();
+
+            Users created = userService.create(user);
+
+            Rooms room = Rooms.builder()
+                    .title("R6X Operators")
+                    .maxUsers(30)
+                    .build();
+            Rooms createdRoom = roomService.save(room);
+            roomService.createRoomWithUser(created.getId(), createdRoom);
+
+            assertTrue(createdRoom.getCreatedBy().equalsIgnoreCase(user.getUsername()));
+            assertTrue(createdRoom.getUsers().stream()
+                    .anyMatch(users -> users.getId().equals(created.getId())));
+
+
+            Users user2 = Users.builder()
+                    .username("Frost")
+                    .isOnline(true)
+                    .build();
+
+            Users friendJoin = userService.create(user2);
+            roomService.joinRoom(createdRoom.getCode(), friendJoin.getId());
+
+            assertTrue(createdRoom.getUsers().stream()
+                    .anyMatch(users -> users.getUsername().equalsIgnoreCase(friendJoin.getUsername())));
+
+            assertTrue(friendJoin.getRoom().getCode().equalsIgnoreCase(createdRoom.getCode()));
+
+
+            Ideas friendIdea = Ideas.builder()
+                    .title("FrostIdea here")
+                    .description(" We need to use C4")
+                    .build();
+
+            Ideas savedIdea = ideaService.
+                    createIdea(friendIdea,
+                    user2.getUsername(),
+                    createdRoom.getId());
+
+            //aprovao por tachanka y comentado
+            ideaService.votarIdea(savedIdea.getId(), created.getUsername(), 1);
+            Comments tachankaComments = Comments.builder()
+                    .content("yess sr")
+                    .build();
+
+            commentService.createCommentOnIdea(
+                    savedIdea.getId(),
+                    created.getId(),
+                    tachankaComments);
+
+            assertFalse(createdRoom.getIdeas().isEmpty());
+            assertEquals( savedIdea.getAuthor(),friendJoin.getUsername());
+            assertEquals( 1,savedIdea.getTotalVotes());
         });
     }
 }

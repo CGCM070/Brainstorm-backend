@@ -9,6 +9,7 @@ import org.brainstorm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -39,6 +40,7 @@ public class RoomService {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id: " + userId));
         room.setCreatedBy(user.getUsername());
+        room.setCreatedAt(LocalDateTime.now());
         room.getUsers().add(user);
         user.setRoom(room);
         return roomsRepository.save(room);
