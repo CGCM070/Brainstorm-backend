@@ -38,6 +38,22 @@ public class RoomController {
         return new ResponseEntity<>(createRoom, HttpStatus.CREATED);
     }
 
+    @PostMapping("/user/{userId}")
+    public ResponseEntity<Rooms> createRoomWithUser(
+            @PathVariable Long userId,
+            @RequestBody @Valid Rooms room) {
+        Rooms created = roomService.createRoomWithUser(userId, room);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @PostMapping("/join/{code}/user/{userId}")
+    public ResponseEntity<Rooms> joinRoom(
+            @PathVariable String code,
+            @PathVariable Long userId) {
+        Rooms joined = roomService.joinRoom(code, userId);
+        return ResponseEntity.ok(joined);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteRoom (@PathVariable Long id) {
         roomService.deleteRoom(id);

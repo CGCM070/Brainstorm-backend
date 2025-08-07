@@ -24,7 +24,7 @@ public class Users {
     private boolean isOnline;
 
     @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(name = "room_id", nullable = true)
     @ToString.Exclude
     @JsonBackReference
     private Rooms room;
