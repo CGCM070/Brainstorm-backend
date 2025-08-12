@@ -21,9 +21,7 @@ public class UserService {
 
     @Transactional
     public Users create (Users users) {
-        if (userRepository.findByUsernameAndRoom(users.getUsername(), users.getRoom()).isPresent()) {
-            throw new RuntimeException("Ya existe un usuario con ese nombre en la sala");
-        }
+        users.setOnline(true);
         return userRepository.save(users);
     }
 
@@ -31,7 +29,9 @@ public class UserService {
     public Users updateUsername (Long id, Users users) {
         Users existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
         existingUser.setUsername(users.getUsername());
+        existingUser.setRoom(null);
         return userRepository.save(existingUser);
     }
 

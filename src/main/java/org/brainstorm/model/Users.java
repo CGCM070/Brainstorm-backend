@@ -18,7 +18,7 @@ public class Users {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(length = 45, unique = true)
+    @Column(length = 45)
     private String username;
 
     private boolean isOnline;

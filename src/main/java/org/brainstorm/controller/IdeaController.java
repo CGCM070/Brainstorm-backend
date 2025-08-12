@@ -32,12 +32,12 @@ public class IdeaController {
     }
 
     @PostMapping("/{id}/vote")
-    public ResponseEntity<Void> votarIdea(
+    public ResponseEntity<Ideas> votarIdea(
             @PathVariable Long id,
             @RequestParam String username,
             @RequestParam int value) {
-        ideaService.votarIdea(id, username, value);
-        return ResponseEntity.ok().build();
+        Ideas updatedIdea = ideaService.votarIdea(id, username, value);
+        return ResponseEntity.ok(updatedIdea);
     }
 
 
@@ -50,9 +50,9 @@ public class IdeaController {
     }
 
     @DeleteMapping("/{id}/user/{userId}")
-    public void deleteIdea(@PathVariable Long id, @PathVariable Long userId) {
+    public ResponseEntity<Void> deleteIdea(@PathVariable Long id, @PathVariable Long userId) {
         ideaService.deleteIdea(id, userId);
-        ResponseEntity.status(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
 

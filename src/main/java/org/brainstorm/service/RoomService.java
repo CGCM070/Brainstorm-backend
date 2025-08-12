@@ -55,6 +55,10 @@ public class RoomService {
         }
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id: " + userId));
+
+        if (userRepository.findByUsernameAndRoom(user.getUsername(), room).isPresent()) {
+            throw new RuntimeException("Ya existe un usuario con ese nombre en la sala");
+        }
         room.getUsers().add(user);
         user.setRoom(room);
         return roomsRepository.save(room);
@@ -69,4 +73,3 @@ public class RoomService {
     }
 
 }
-

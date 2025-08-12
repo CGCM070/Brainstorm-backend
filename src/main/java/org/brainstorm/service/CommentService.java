@@ -23,6 +23,8 @@ public class CommentService {
     private IdeaRepository ideaRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private WebSocketService webSocketService;
 
     public List<Comments> getAllComments() {
         return commentRepository.findAll();
@@ -51,7 +53,12 @@ public class CommentService {
         comment.setAuthorUsername(user.getUsername());
         comment.setIdea(idea);
         idea.getComments().add(comment);
-        return commentRepository.save(comment);
+        Comments savedComment = commentRepository.save(comment);
+
+        // Notificar via WebSocket
+        webSocketService.notifyCommentCreated(idea.getRoom().getCode(), ideaID, savedComment, user.getUsername());
+
+        return savedComment;
     }
 
     @Transactional
@@ -67,7 +74,17 @@ public class CommentService {
         }
         existingComment.setContent(comment.getContent());
         existingComment.setUpdatedAt(LocalDateTime.now());
-        return commentRepository.save(existingComment);
+        Comments updatedComment = commentRepository.save(existingComment);
+
+        // Notificar via WebSocket
+        webSocketService.notifyCommentUpdated(
+            existingComment.getIdea().getRoom().getCode(),
+            existingComment.getIdea().getId(),
+            updatedComment,
+            user.getUsername()
+        );
+
+        return updatedComment;
     }
 
     @Transactional
@@ -82,7 +99,12 @@ public class CommentService {
             throw new IllegalArgumentException("No puedes borrar un comentario que no te pertence");
         }
 
+        String roomCode = existingComment.getIdea().getRoom().getCode();
+        Long ideaId = existingComment.getIdea().getId();
+
         commentRepository.deleteById(id);
+
+        // Notificar via WebSocket
+        webSocketService.notifyCommentDeleted(roomCode, ideaId, id, user.getUsername());
     }
 }
-
