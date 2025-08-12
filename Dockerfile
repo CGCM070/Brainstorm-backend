@@ -4,10 +4,10 @@ FROM openjdk:17-jdk-slim
 # Establecer directorio de trabajo
 WORKDIR /app
 
-# Copiar archivos de Maven desde la carpeta Brainstorm
-COPY Brainstorm/mvnw .
-COPY Brainstorm/.mvn .mvn
-COPY Brainstorm/pom.xml .
+# Copiar archivos de Maven (sin Brainstorm/ porque ya estamos dentro)
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 
 # Hacer mvnw ejecutable
 RUN chmod +x mvnw
@@ -15,8 +15,8 @@ RUN chmod +x mvnw
 # Descargar dependencias
 RUN ./mvnw dependency:go-offline -B
 
-# Copiar código fuente desde la carpeta Brainstorm
-COPY Brainstorm/src src
+# Copiar código fuente
+COPY src src
 
 # Construir la aplicación
 RUN ./mvnw clean package -DskipTests
