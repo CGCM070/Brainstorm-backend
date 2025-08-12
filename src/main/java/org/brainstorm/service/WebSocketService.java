@@ -3,7 +3,9 @@ package org.brainstorm.service;
 import org.brainstorm.dto.IdeaUpdateMessage;
 import org.brainstorm.dto.IdeaMapper;
 import org.brainstorm.dto.IdeaWebSocketDto;
+import org.brainstorm.dto.CommentWebSocketDto;
 import org.brainstorm.model.Ideas;
+import org.brainstorm.model.Comments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -69,23 +71,25 @@ public class WebSocketService {
     }
 
     // Métodos para comentarios
-    public void notifyCommentCreated(String roomCode, Long ideaId, Object comment, String username) {
+    public void notifyCommentCreated(String roomCode, Long ideaId, Comments comment, String username) {
+        CommentWebSocketDto commentDto = IdeaMapper.toWebSocketDto(comment);
         IdeaUpdateMessage message = new IdeaUpdateMessage(
             "COMMENT_CREATE",
             ideaId,
             roomCode,
-            comment,
+            commentDto,
             username
         );
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/ideas", message);
     }
 
-    public void notifyCommentUpdated(String roomCode, Long ideaId, Object comment, String username) {
+    public void notifyCommentUpdated(String roomCode, Long ideaId, Comments comment, String username) {
+        CommentWebSocketDto commentDto = IdeaMapper.toWebSocketDto(comment);
         IdeaUpdateMessage message = new IdeaUpdateMessage(
             "COMMENT_UPDATE",
             ideaId,
             roomCode,
-            comment,
+            commentDto,
             username
         );
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/ideas", message);
