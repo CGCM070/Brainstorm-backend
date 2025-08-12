@@ -1,6 +1,9 @@
 package org.brainstorm.service;
 
 import org.brainstorm.dto.IdeaUpdateMessage;
+import org.brainstorm.dto.IdeaMapper;
+import org.brainstorm.dto.IdeaWebSocketDto;
+import org.brainstorm.model.Ideas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -18,23 +21,25 @@ public class WebSocketService {
     // roomCode -> Set<username>
     private final ConcurrentHashMap<String, Set<String>> roomConnections = new ConcurrentHashMap<>();
 
-    public void notifyIdeaCreated(String roomCode, Object idea, String username) {
+    public void notifyIdeaCreated(String roomCode, Ideas idea, String username) {
+        IdeaWebSocketDto ideaDto = IdeaMapper.toWebSocketDto(idea);
         IdeaUpdateMessage message = new IdeaUpdateMessage(
             "CREATE",
             null,
             roomCode,
-            idea,
+            ideaDto,
             username
         );
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/ideas", message);
     }
 
-    public void notifyIdeaUpdated(String roomCode, Long ideaId, Object idea, String username) {
+    public void notifyIdeaUpdated(String roomCode, Long ideaId, Ideas idea, String username) {
+        IdeaWebSocketDto ideaDto = IdeaMapper.toWebSocketDto(idea);
         IdeaUpdateMessage message = new IdeaUpdateMessage(
             "UPDATE",
             ideaId,
             roomCode,
-            idea,
+            ideaDto,
             username
         );
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/ideas", message);
@@ -51,12 +56,13 @@ public class WebSocketService {
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/ideas", message);
     }
 
-    public void notifyIdeaVoted(String roomCode, Long ideaId, Object updatedIdea, String username) {
+    public void notifyIdeaVoted(String roomCode, Long ideaId, Ideas updatedIdea, String username) {
+        IdeaWebSocketDto ideaDto = IdeaMapper.toWebSocketDto(updatedIdea);
         IdeaUpdateMessage message = new IdeaUpdateMessage(
             "VOTE",
             ideaId,
             roomCode,
-            updatedIdea,
+            ideaDto,
             username
         );
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/ideas", message);
