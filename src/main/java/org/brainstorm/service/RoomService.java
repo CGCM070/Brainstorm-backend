@@ -50,17 +50,41 @@ public class RoomService {
     public Rooms joinRoom(String code, Long userId) {
         Rooms room = roomsRepository.findByCode(code)
                 .orElseThrow(() -> new EntityNotFoundException("Sala no encontrada con código: " + code));
+
         if (room.getUsers().size() >= room.getMaxUsers()) {
             throw new IllegalArgumentException("La sala está llena");
         }
+
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id: " + userId));
 
-        if (userRepository.findByUsernameAndRoom(user.getUsername(), room).isPresent()) {
+        // Verificar si el usuario ya está en la sala
+        boolean userAlreadyInRoom = room.getUsers().stream()
+                .anyMatch(existingUser -> existingUser.getId().equals(userId));
+
+        if (userAlreadyInRoom) {
+            throw new RuntimeException("El usuario ya está en esta sala");
+        }
+
+        // Verificar si ya existe un usuario con el mismo nombre en la sala
+        boolean usernameExists = room.getUsers().stream()
+                .anyMatch(existingUser -> existingUser.getUsername().equalsIgnoreCase(user.getUsername()));
+
+        if (usernameExists) {
             throw new RuntimeException("Ya existe un usuario con ese nombre en la sala");
         }
+
+        // Remover al usuario de su sala anterior si está en una
+        if (user.getRoom() != null) {
+            Rooms previousRoom = user.getRoom();
+            previousRoom.getUsers().remove(user);
+            roomsRepository.save(previousRoom);
+        }
+
+        // Agregar usuario a la nueva sala
         room.getUsers().add(user);
         user.setRoom(room);
+
         return roomsRepository.save(room);
     }
 

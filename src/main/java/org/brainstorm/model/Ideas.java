@@ -26,7 +26,6 @@ public class Ideas {
     @Column(length = 100)
     private String title;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -39,11 +38,11 @@ public class Ideas {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt ;
 
-    @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private Set<Comments> comments = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     @ToString.Exclude
     @JsonIgnore
