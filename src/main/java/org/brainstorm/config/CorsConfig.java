@@ -11,7 +11,7 @@ import java.util.List;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
-    @Value("${cors.allowed.origins:http://localhost:4200}")
+    @Value("${cors.allowed.origins}")
     private String allowedOrigins;
 
     @Override
@@ -22,6 +22,7 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins(origins.toArray(new String[0]))
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
+                .exposedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(3600);
     }
