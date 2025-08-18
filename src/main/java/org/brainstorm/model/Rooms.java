@@ -3,6 +3,7 @@ package org.brainstorm.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,8 @@ public class Rooms {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "El título no puede estar vacío")
+    @Size(min = 3, max = 25, message = "El título debe tener entre 3 y 20 caracteres")
     private String title ;
 
     @Column(length = 6)
