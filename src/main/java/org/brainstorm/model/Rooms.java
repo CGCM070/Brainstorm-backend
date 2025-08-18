@@ -37,7 +37,7 @@ public class Rooms {
     @Column(length = 45)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    private Integer maxUsers;
+    private Integer maxUsers =50;
 
     @OneToMany (mappedBy = "room", cascade = CascadeType.ALL)
     @Builder.Default
