@@ -17,7 +17,7 @@ public class IdeaController {
     @Autowired
     private IdeaService ideaService;
 
-    @GetMapping("/all")
+    @GetMapping("")
     public Page<Ideas> getAllIdeas(Pageable pageable) {
         return ideaService.getAllIdeas(pageable);
     }

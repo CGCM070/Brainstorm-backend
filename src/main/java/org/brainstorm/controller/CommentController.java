@@ -16,7 +16,7 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @GetMapping("all")
+    @GetMapping("")
     public ResponseEntity<List<Comments>> getAllComments() {
         List<Comments> comments = commentService.getAllComments();
         if (comments.isEmpty()) {
@@ -39,7 +39,7 @@ public class CommentController {
                                                          @PathVariable Long userId ,
                                                          @RequestBody @Valid  Comments comment) {
         Comments createdComment = commentService.createCommentOnIdea(ideaId,userId,comment);
-        return ResponseEntity.status(201).body(createdComment);
+        return ResponseEntity.status (201).body(createdComment);
     }
 
     @PutMapping("/{id}/user/{userId}")
