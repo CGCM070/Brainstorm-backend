@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Service
 public class IdeaService {
@@ -70,7 +70,7 @@ public class IdeaService {
 
         existingIdea.setTitle(idea.getTitle());
         existingIdea.setDescription(idea.getDescription());
-        existingIdea.setUpdatedAt(LocalDateTime.now());
+        existingIdea.setUpdatedAt(Instant.now());
         Ideas updatedIdea = ideaRepository.save(existingIdea);
 
         // Notificar via WebSocket
