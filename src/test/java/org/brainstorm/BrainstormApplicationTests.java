@@ -43,7 +43,7 @@ class BrainstormApplicationTests {
 
     @Test
     void creandoSala_ConUsuarios() {
-
+        // Given - Preparamos una sala y dos usuarios
         Rooms room = Rooms.builder()
                 .createdBy("admin")
                 .maxUsers(30)
@@ -65,11 +65,11 @@ class BrainstormApplicationTests {
         userService.create(user2);
 
 
-        // Añadir los usuarios a la sala
+        // When - Añadimos los usuarios a la sala y guardamos
         room.getUsers().add(user1);
         room.getUsers().add(user2);
 
-        // Guardar la sala (esto también guardará los usuarios debido a CascadeType.ALL)
+        // Then - Verificamos que los usuarios están en la sala
         roomService.save(room);
         transactionTemplate.executeWithoutResult(transactionStatus -> {
             // Verificar que los usuarios están en la sala
@@ -84,6 +84,7 @@ class BrainstormApplicationTests {
     @Test
     void RoomWhitUserAndIdea() {
         transactionTemplate.executeWithoutResult(transactionStatus -> {
+            // Given - Preparamos sala con usuarios
             Rooms room = Rooms.builder()
                     .createdBy("admin")
                     .maxUsers(30)
@@ -105,18 +106,17 @@ class BrainstormApplicationTests {
             userService.create(user2);
 
 
-            // Añadir los usuarios a la sala
+            // When - Añadimos los usuarios a la sala y guardamos
             room.getUsers().add(user1);
             room.getUsers().add(user2);
 
-            // Guardar la sala (esto también guardará los usuarios debido a CascadeType.ALL)
             roomService.save(room);
 
-            // Verificar que los usuarios están en la sala
+            // Then - Verificamos que los usuarios están en la sala
             assertTrue(room.getUsers().contains(user1));
             assertTrue(room.getUsers().contains(user2));
 
-
+            // When - Creamos ideas para los usuarios
             Ideas idea1 = Ideas.builder()
                     .title("first idea")
                     .description("make more unit test")
@@ -131,6 +131,7 @@ class BrainstormApplicationTests {
                     .build();
             ideaService.createIdea(idea2, user2.getUsername(), room.getId());
 
+            // Then - Verificamos que las ideas están en la sala
             assertNotNull(room.getIdeas());
             assertTrue(room.getIdeas().stream().anyMatch(ideas -> ideas.getTitle().equals("second idea")));
 
@@ -140,6 +141,7 @@ class BrainstormApplicationTests {
     @Test
     void RoomWhitUserAndIdea_AndComments() {
         transactionTemplate.executeWithoutResult(transactionStatus -> {
+            // Given - Preparamos sala con usuarios e ideas
             Rooms room = Rooms.builder()
                     .createdBy("admin")
                     .maxUsers(30)
@@ -161,14 +163,14 @@ class BrainstormApplicationTests {
             userService.create(user2);
 
 
-            // Añadir los usuarios a la sala
+            // When - Añadimos los usuarios a la sala y guardamos
             room.getUsers().add(user1);
             room.getUsers().add(user2);
 
-            // Guardar la sala (esto también guardará los usuarios debido a CascadeType.ALL)
+
             roomService.save(room);
 
-            // Verificar que los usuarios están en la sala
+            // Then - Verificamos que los usuarios están en la sala
             assertTrue(room.getUsers().contains(user1));
             assertTrue(room.getUsers().contains(user2));
 
@@ -189,6 +191,8 @@ class BrainstormApplicationTests {
             assertNotNull(room.getIdeas());
             assertTrue(room.getIdeas().stream().anyMatch(ideas -> ideas.getTitle().equals("second idea")));
 
+
+            // When - Creamos un comentario en una idea
             Comments comentario1 = Comments.builder()
                     .content("first comment ")
                     .build();
@@ -201,6 +205,8 @@ class BrainstormApplicationTests {
             // Usamos stream().anyMatch(...) en lugar de contains()
             // porque al usar un Set<Comments> con equals/hashCode basados en id,
             // el hashCode cambia tras persistir (id deja de ser null) y contains() falla.
+
+            // Then - Verificamos que el comentario se creó correctamente
             assertTrue(
                     idea1.getComments()
                             .stream()
@@ -214,6 +220,74 @@ class BrainstormApplicationTests {
     void createUserAndOwnRoom_othersJoin() {
 
         transactionTemplate.executeWithoutResult(transactionStatus -> {
+            // Given - Preparamos usuario inicial
+            Users user = Users.builder()
+                    .username("Tachanka")
+                    .isOnline(true)
+                    .build();
+
+            Users created = userService.create(user);
+
+            Rooms room = Rooms.builder()
+                    .title("R6X Operators")
+                    .maxUsers(30)
+                    .build();
+            Rooms createdRoom = roomService.save(room);
+            // When - El usuario crea una sala y otro usuario se une
+            roomService.createRoomWithUser(created.getId(), createdRoom);
+
+            assertTrue(createdRoom.getCreatedBy().equalsIgnoreCase(user.getUsername()));
+            assertTrue(createdRoom.getUsers().stream()
+                    .anyMatch(users -> users.getId().equals(created.getId())));
+
+
+            Users user2 = Users.builder()
+                    .username("Frost")
+                    .isOnline(true)
+                    .build();
+
+            Users friendJoin = userService.create(user2);
+            roomService.joinRoom(createdRoom.getCode(), friendJoin.getId());
+
+            assertTrue(createdRoom.getUsers().stream()
+                    .anyMatch(users -> users.getUsername().equalsIgnoreCase(friendJoin.getUsername())));
+
+            assertTrue(friendJoin.getRoom().getCode().equalsIgnoreCase(createdRoom.getCode()));
+
+
+            Ideas friendIdea = Ideas.builder()
+                    .title("FrostIdea here")
+                    .description(" We need to use C4")
+                    .build();
+
+            Ideas savedIdea = ideaService.
+                    createIdea(friendIdea,
+                    user2.getUsername(),
+                    createdRoom.getId());
+
+
+            ideaService.votarIdea(savedIdea.getId(), created.getUsername(), 1);
+            Comments tachankaComments = Comments.builder()
+                    .content("yess sr")
+                    .build();
+
+            commentService.createCommentOnIdea(
+                    savedIdea.getId(),
+                    created.getId(),
+                    tachankaComments);
+
+            // Then - Verificamos el estado final
+            assertFalse(createdRoom.getIdeas().isEmpty());
+            assertEquals( savedIdea.getAuthor(),friendJoin.getUsername());
+            assertEquals( 1,savedIdea.getTotalVotes());
+        });
+    }
+
+    @Test
+    void removeUserFromRoom_AndDelete_user() {
+
+        transactionTemplate.executeWithoutResult(transactionStatus -> {
+            // Given - Preparamos sala con usuarios, ideas y comentarios
             Users user = Users.builder()
                     .username("Tachanka")
                     .isOnline(true)
@@ -254,10 +328,10 @@ class BrainstormApplicationTests {
 
             Ideas savedIdea = ideaService.
                     createIdea(friendIdea,
-                    user2.getUsername(),
-                    createdRoom.getId());
+                            user2.getUsername(),
+                            createdRoom.getId());
 
-            //aprovao por tachanka y comentado
+
             ideaService.votarIdea(savedIdea.getId(), created.getUsername(), 1);
             Comments tachankaComments = Comments.builder()
                     .content("yess sr")
@@ -271,6 +345,18 @@ class BrainstormApplicationTests {
             assertFalse(createdRoom.getIdeas().isEmpty());
             assertEquals( savedIdea.getAuthor(),friendJoin.getUsername());
             assertEquals( 1,savedIdea.getTotalVotes());
+
+            // When - Removemos al usuario de la sala
+            roomService.removeUserFromRoom(friendJoin.getId());
+
+            // Then - Verificamos que el usuario fue removido correctamente
+            assertFalse(createdRoom.getUsers().stream()
+                    .anyMatch(users -> users.getId().equals(friendJoin.getId())));
+            assertNull(friendJoin.getRoom());
+            assertFalse(userService.getAll().stream()
+                    .anyMatch(users -> users.getId().equals(friendJoin.getId())));
+
+
         });
     }
 }
