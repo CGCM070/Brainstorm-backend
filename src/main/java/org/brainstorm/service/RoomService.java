@@ -96,4 +96,18 @@ public class RoomService {
         roomsRepository.delete(room);
     }
 
+    @Transactional
+    public void removeUserFromRoom(Long userId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id: " + userId));
+
+        Rooms room = user.getRoom();
+        if (room != null) {
+            room.getUsers().remove(user);
+            user.setRoom(null);
+            roomsRepository.save(room);
+            userRepository.save(user);
+        }
+        userRepository.delete(user);
+    }
 }
