@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Builder
 @Entity
 @Data
@@ -31,4 +34,7 @@ public class Users {
     @ToString.Exclude
     @JsonBackReference
     private Rooms room;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Votes> votes = new HashSet<>();
 }

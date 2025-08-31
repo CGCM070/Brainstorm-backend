@@ -48,10 +48,10 @@ public class Ideas {
     @JsonIgnore
     private Rooms room;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "idea_voters", joinColumns = @JoinColumn(name = "idea_id"))
-    @MapKeyColumn(name = "username")
-    @Column(name = "vote_value")
+    @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Map<String, Integer> userVotes = new HashMap<>();
+    private Set<Votes> votes = new HashSet<>();
+
+
+
 }

@@ -99,36 +99,36 @@ public class IdeaService {
         webSocketService.notifyIdeaDeleted(roomCode, id, user.getUsername());
     }
 
-    @Transactional
-    public Ideas votarIdea(Long ideaId, String username, int value){
-
-        if (value != 1 && value != -1 && value != 0) {
-            throw new IllegalArgumentException("El valor de voto debe ser 1, -1 o 0");
-        }
-
-        Ideas idea = ideaRepository.findById(ideaId)
-                .orElseThrow(() -> new EntityNotFoundException("Idea not found with id: " + ideaId));
-
-        Integer previousVote = idea.getUserVotes().get(username);
-        if (previousVote != null) {
-            // Resta el voto anterior
-            idea.setTotalVotes(idea.getTotalVotes() - previousVote);
-        }
-
-        if (value == 0) {
-            // Eliminar el voto
-            idea.getUserVotes().remove(username);
-        } else {
-            // Suma el nuevo voto
-            idea.setTotalVotes(idea.getTotalVotes() + value);
-            idea.getUserVotes().put(username, value);
-        }
-
-        Ideas updatedIdea = ideaRepository.save(idea);
-
-        // Notificar via WebSocket
-        webSocketService.notifyIdeaVoted(idea.getRoom().getCode(), ideaId, updatedIdea, username);
-
-        return updatedIdea;
-    }
+//    @Transactional
+//    public Ideas votarIdea(Long ideaId, String username, int value){
+//
+//        if (value != 1 && value != -1 && value != 0) {
+//            throw new IllegalArgumentException("El valor de voto debe ser 1, -1 o 0");
+//        }
+//
+//        Ideas idea = ideaRepository.findById(ideaId)
+//                .orElseThrow(() -> new EntityNotFoundException("Idea not found with id: " + ideaId));
+//
+//        Integer previousVote = idea.getUserVotes().get(username);
+//        if (previousVote != null) {
+//            // Resta el voto anterior
+//            idea.setTotalVotes(idea.getTotalVotes() - previousVote);
+//        }
+//
+//        if (value == 0) {
+//            // Eliminar el voto
+//            idea.getUserVotes().remove(username);
+//        } else {
+//            // Suma el nuevo voto
+//            idea.setTotalVotes(idea.getTotalVotes() + value);
+//            idea.getUserVotes().put(username, value);
+//        }
+//
+//        Ideas updatedIdea = ideaRepository.save(idea);
+//
+//        // Notificar via WebSocket
+//        webSocketService.notifyIdeaVoted(idea.getRoom().getCode(), ideaId, updatedIdea, username);
+//
+//        return updatedIdea;
+//    }
 }
