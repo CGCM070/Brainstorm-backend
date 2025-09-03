@@ -1,6 +1,7 @@
 package org.brainstorm.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,10 +19,7 @@ public class Votes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-
-    @Builder.Default
-    private Integer totalVotes = 0;
-
+    
     private Instant createdAt = Instant.now();
     private Instant  updatedAt ;
 
@@ -30,6 +28,7 @@ public class Votes {
     @ManyToOne
     @JoinColumn(name = "idea_id")
     @ToString.Exclude
+    @JsonIgnore
     private Ideas idea;
 
     @ManyToOne

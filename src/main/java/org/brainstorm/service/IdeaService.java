@@ -32,25 +32,33 @@ public class IdeaService {
     }
 
     @Transactional
-    public Ideas createIdea(Ideas idea , String username, Long roomId ) {
+    public Ideas createIdea(Ideas idea, Long  userId, Long roomId) {
         Rooms room = roomsRepository.findById(roomId).
                 orElseThrow(() -> new EntityNotFoundException("Sala no encontrada con id : " + roomId));
 
+        Users user = userRepository.findById(userId).orElseThrow(
+                () ->  new EntityNotFoundException("Usuario no econtrado con id : " + userId)
+        );
+
+
         boolean userExist = room.getUsers()
                 .stream()
-                .anyMatch(users -> users.getUsername()
-                        .equals(username));
+                .anyMatch(u -> u.getUsername()
+                        .equals(user.getUsername()));
 
         if (!userExist) {
-            throw new IllegalArgumentException ("El autor no pertence a la sala especificada");
+            throw new IllegalArgumentException("El autor no pertence a la sala especificada");
         }
-        idea.setAuthor(username);
+
+
+        idea.setAuthor(user.getUsername());
         idea.setRoom(room);
+        idea.setUser(user);
         room.getIdeas().add(idea);
         Ideas savedIdea = ideaRepository.save(idea);
 
         // Notificar via WebSocket
-        webSocketService.notifyIdeaCreated(room.getCode(), savedIdea, username);
+        webSocketService.notifyIdeaCreated(room.getCode(), savedIdea, user.getUsername());
 
         return savedIdea;
     }
@@ -65,7 +73,7 @@ public class IdeaService {
         );
 
         if (!existingIdea.getAuthor().equalsIgnoreCase(user.getUsername())) {
-            throw  new IllegalArgumentException("No puedes actualizar una idea que no te pertenece");
+            throw new IllegalArgumentException("No puedes actualizar una idea que no te pertenece");
         }
 
         existingIdea.setTitle(idea.getTitle());
@@ -88,8 +96,8 @@ public class IdeaService {
                 () -> new EntityNotFoundException("No se ha encotrado el usuario con id : " + userId)
         );
 
-        if (!existingIdea.getAuthor().equalsIgnoreCase(user.getUsername())) {
-            throw  new IllegalArgumentException("No puedes eliminar una idea que no te pertenece");
+        if (!existingIdea.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("No puedes eliminar una idea que no te pertenece");
         }
 
         String roomCode = existingIdea.getRoom().getCode();
@@ -99,36 +107,4 @@ public class IdeaService {
         webSocketService.notifyIdeaDeleted(roomCode, id, user.getUsername());
     }
 
-//    @Transactional
-//    public Ideas votarIdea(Long ideaId, String username, int value){
-//
-//        if (value != 1 && value != -1 && value != 0) {
-//            throw new IllegalArgumentException("El valor de voto debe ser 1, -1 o 0");
-//        }
-//
-//        Ideas idea = ideaRepository.findById(ideaId)
-//                .orElseThrow(() -> new EntityNotFoundException("Idea not found with id: " + ideaId));
-//
-//        Integer previousVote = idea.getUserVotes().get(username);
-//        if (previousVote != null) {
-//            // Resta el voto anterior
-//            idea.setTotalVotes(idea.getTotalVotes() - previousVote);
-//        }
-//
-//        if (value == 0) {
-//            // Eliminar el voto
-//            idea.getUserVotes().remove(username);
-//        } else {
-//            // Suma el nuevo voto
-//            idea.setTotalVotes(idea.getTotalVotes() + value);
-//            idea.getUserVotes().put(username, value);
-//        }
-//
-//        Ideas updatedIdea = ideaRepository.save(idea);
-//
-//        // Notificar via WebSocket
-//        webSocketService.notifyIdeaVoted(idea.getRoom().getCode(), ideaId, updatedIdea, username);
-//
-//        return updatedIdea;
-//    }
 }

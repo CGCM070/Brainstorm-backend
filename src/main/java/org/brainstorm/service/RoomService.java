@@ -108,6 +108,6 @@ public class RoomService {
             roomsRepository.save(room);
             userRepository.save(user);
         }
-        userRepository.delete(user);
+//        userRepository.delete(user);
     }
 }

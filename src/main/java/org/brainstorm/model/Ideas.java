@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 @Builder
@@ -48,9 +46,15 @@ public class Ideas {
     @JsonIgnore
     private Rooms room;
 
-    @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<Votes> votes = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    //@JsonIgnore
+    @ToString.Exclude
+    private Users user;
 
 
 

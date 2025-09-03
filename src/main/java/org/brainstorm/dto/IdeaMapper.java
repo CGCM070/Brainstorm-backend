@@ -11,6 +11,7 @@ public class IdeaMapper {
                 .title(idea.getTitle())
                 .description(idea.getDescription())
                 .author(idea.getAuthor())
+                .userId(idea.getUser() != null ? idea.getUser().getId() : null)
                 .totalVotes(idea.getTotalVotes())
                 .createdAt(idea.getCreatedAt())
                 .updatedAt(idea.getUpdatedAt())

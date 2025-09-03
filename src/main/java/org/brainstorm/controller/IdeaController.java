@@ -24,20 +24,11 @@ public class IdeaController {
 
     @PostMapping("/rooms/{roomId}")
     public ResponseEntity< Ideas> createIdea(@RequestBody @Valid Ideas idea,
-                                           @RequestParam String authorUsername,
+                                           @RequestParam Long userId,
                                            @PathVariable Long roomId) {
-        Ideas createdIdea = ideaService.createIdea(idea,authorUsername,roomId);
+        Ideas createdIdea = ideaService.createIdea(idea,userId ,roomId);
         return  new ResponseEntity<>(createdIdea, HttpStatus.CREATED);
     }
-
-//    @PostMapping("/{id}/vote")
-//    public ResponseEntity<Ideas> votarIdea(
-//            @PathVariable Long id,
-//            @RequestParam String username,
-//            @RequestParam int value) {
-//        Ideas updatedIdea = ideaService.votarIdea(id, username, value);
-//        return ResponseEntity.ok(updatedIdea);
-//    }
 
 
     @PutMapping("/{id}/user/{userId}")
