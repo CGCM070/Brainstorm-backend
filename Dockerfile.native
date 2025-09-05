@@ -1,17 +1,5 @@
 # ---------- Etapa de construcción GraalVM Native ----------
-FROM ghcr.io/graalvm/graalvm-community:21-ol9 AS build
-
-# Instalar herramientas necesarias
-RUN microdnf update \
-    && microdnf install --nodocs \
-        tar \
-        gzip \
-        findutils \
-    && microdnf clean all \
-    && rm -rf /var/cache/yum
-
-# Instalar native-image
-RUN gu install native-image
+FROM ghcr.io/graalvm/native-image-community:21 AS build
 
 # Establecer directorio de trabajo
 WORKDIR /app
