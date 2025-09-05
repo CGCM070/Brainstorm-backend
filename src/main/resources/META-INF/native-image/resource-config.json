@@ -1,0 +1,11 @@
+[
+  {
+    "name": "org.postgresql.Driver"
+  },
+  {
+    "name": "com.mysql.cj.jdbc.Driver"
+  },
+  {
+    "name": "org.h2.Driver"
+  }
+]

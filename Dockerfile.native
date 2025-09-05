@@ -1,0 +1,55 @@
+# ---------- Etapa de construcción GraalVM Native ----------
+FROM ghcr.io/graalvm/graalvm-community:21-ol9 AS build
+
+# Instalar herramientas necesarias
+RUN microdnf update \
+    && microdnf install --nodocs \
+        tar \
+        gzip \
+        findutils \
+    && microdnf clean all \
+    && rm -rf /var/cache/yum
+
+# Instalar native-image
+RUN gu install native-image
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Copiar archivos de configuración Maven
+COPY pom.xml .
+COPY mvnw .
+COPY .mvn .mvn
+
+# Hacer mvnw ejecutable
+RUN chmod +x mvnw
+
+# Descargar dependencias para optimizar cache
+RUN ./mvnw dependency:go-offline -B
+
+# Copiar código fuente
+COPY src src
+
+# Compilar aplicación con AOT processing
+RUN ./mvnw clean package -Pnative -DskipTests
+
+# ---------- Etapa de runtime minimalista ----------
+FROM gcr.io/distroless/cc-debian12
+
+# Configurar usuario no-root para seguridad
+USER nonroot:nonroot
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Copiar binario nativo desde la etapa build
+COPY --from=build --chown=nonroot:nonroot /app/target/Brainstorm app
+
+# Exponer puerto
+EXPOSE 8080
+
+# Variables de entorno optimizadas para Render free tier
+ENV SPRING_PROFILES_ACTIVE=prod
+
+# Ejecutar aplicación nativa
+ENTRYPOINT ["./app"]
