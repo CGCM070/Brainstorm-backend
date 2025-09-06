@@ -18,8 +18,8 @@ RUN ./mvnw dependency:go-offline -B
 # Copiar código fuente
 COPY src src
 
-# Compilar aplicación con AOT processing
-RUN ./mvnw clean package -Pnative -DskipTests
+# Compilar aplicación nativa con AOT processing y metadata para Spring Boot
+RUN ./mvnw -Pnative -DskipTests spring-boot:process-aot native:compile
 
 # ---------- Etapa de runtime minimalista ----------
 FROM gcr.io/distroless/cc-debian12
