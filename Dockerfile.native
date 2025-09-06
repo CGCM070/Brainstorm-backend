@@ -33,6 +33,7 @@ WORKDIR /app
 # Copiar binario nativo desde la etapa build
 COPY --from=build --chown=nonroot:nonroot /app/target/Brainstorm app
 
+
 # Exponer puerto
 EXPOSE 8080
 
