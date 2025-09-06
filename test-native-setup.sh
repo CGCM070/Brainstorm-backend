@@ -4,9 +4,9 @@ echo "=== Brainstorm Native Build Test Script ==="
 echo "Testing different build approaches for optimal deployment"
 echo
 
-# Test 1: Standard AOT processing
-echo "1. Testing AOT Processing..."
-./mvnw clean package -DskipTests spring-boot:process-aot
+# Test 1: Standard AOT processing with explicit main class
+echo "1. Testing AOT Processing with explicit main class..."
+./mvnw clean package -DskipTests -Dmain.class=org.brainstorm.BrainstormApplication spring-boot:process-aot
 if [ $? -eq 0 ]; then
     echo "✅ AOT Processing: PASSED"
 else
@@ -60,7 +60,7 @@ echo "✅ WebSocket configuration prepared for native mode"
 echo "✅ Optimized Dockerfile ready for production"
 echo
 echo "To build natively (requires GraalVM with native-image):"
-echo "  ./mvnw clean package -Pnative -DskipTests"
+echo "  ./mvnw clean package -Pnative -DskipTests -Dmain.class=org.brainstorm.BrainstormApplication"
 echo
 echo "To build optimized JVM version:"
 echo "  docker build -f Dockerfile.optimized -t brainstorm-app ."

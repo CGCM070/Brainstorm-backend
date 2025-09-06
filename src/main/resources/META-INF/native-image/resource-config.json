@@ -1,11 +1,32 @@
-[
-  {
-    "name": "org.postgresql.Driver"
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "\\Qapplication.properties\\E"
+      },
+      {
+        "pattern": "\\Qapplication-prod.properties\\E"
+      },
+      {
+        "pattern": "\\Qapplication-dev.properties\\E"
+      },
+      {
+        "pattern": "\\Qorg/springframework/\\E.*"
+      },
+      {
+        "pattern": "\\Qorg/hibernate/\\E.*"
+      }
+    ]
   },
-  {
-    "name": "com.mysql.cj.jdbc.Driver"
-  },
-  {
-    "name": "org.h2.Driver"
-  }
-]
+  "bundles": [
+    {
+      "name": "org.postgresql.Driver"
+    },
+    {
+      "name": "com.mysql.cj.jdbc.Driver"
+    },
+    {
+      "name": "org.h2.Driver"
+    }
+  ]
+}

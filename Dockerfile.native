@@ -1,6 +1,10 @@
 # ---------- Etapa de construcción GraalVM Native ----------
 FROM ghcr.io/graalvm/native-image-community:21 AS build
 
+# Configurar locale para evitar warnings
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
 # Establecer directorio de trabajo
 WORKDIR /app
 
@@ -19,7 +23,7 @@ RUN ./mvnw dependency:go-offline -B
 COPY src src
 
 # Compilar aplicación nativa con AOT processing y metadata para Spring Boot
-RUN ./mvnw -Pnative -DskipTests spring-boot:process-aot native:compile
+RUN ./mvnw clean package -Pnative -DskipTests -Dmain.class=org.brainstorm.BrainstormApplication
 
 # ---------- Etapa de runtime minimalista ----------
 FROM gcr.io/distroless/cc-debian12
