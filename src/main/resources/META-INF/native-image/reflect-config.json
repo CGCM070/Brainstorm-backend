@@ -6,37 +6,55 @@
     "allDeclaredConstructors": true
   },
   {
-    "name": "org.brainstorm.model.Users",
+    "name": "org.brainstorm.config.WebSocketConfig",
     "allDeclaredFields": true,
     "allDeclaredMethods": true,
     "allDeclaredConstructors": true
   },
   {
-    "name": "org.brainstorm.model.Rooms",
+    "name": "org.brainstorm.config.WebSocketEventListener",
     "allDeclaredFields": true,
     "allDeclaredMethods": true,
     "allDeclaredConstructors": true
   },
   {
-    "name": "org.brainstorm.model.Ideas",
+    "name": "org.brainstorm.service.WebSocketService",
     "allDeclaredFields": true,
     "allDeclaredMethods": true,
     "allDeclaredConstructors": true
   },
   {
-    "name": "org.brainstorm.model.Comments",
+    "name": "org.brainstorm.service.WebSocketService$UserCountData",
     "allDeclaredFields": true,
     "allDeclaredMethods": true,
     "allDeclaredConstructors": true
   },
   {
-    "name": "org.brainstorm.model.Votes",
+    "name": "org.brainstorm.dto.IdeaUpdateMessage",
     "allDeclaredFields": true,
     "allDeclaredMethods": true,
     "allDeclaredConstructors": true
   },
   {
-    "name": "org.springframework.messaging.simp.SimpMessageType",
+    "name": "org.brainstorm.dto.IdeaWebSocketDto",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.brainstorm.dto.CommentWebSocketDto",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.brainstorm.dto.IdeaMapper",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.springframework.messaging.simp.SimpMessagingTemplate",
     "allDeclaredFields": true,
     "allDeclaredMethods": true,
     "allDeclaredConstructors": true
@@ -54,19 +72,19 @@
     "allDeclaredConstructors": true
   },
   {
-    "name": "org.postgresql.Driver",
+    "name": "org.springframework.web.socket.messaging.SessionConnectedEvent",
     "allDeclaredFields": true,
     "allDeclaredMethods": true,
     "allDeclaredConstructors": true
   },
   {
-    "name": "com.mysql.cj.jdbc.Driver",
+    "name": "org.springframework.web.socket.messaging.SessionDisconnectEvent",
     "allDeclaredFields": true,
     "allDeclaredMethods": true,
     "allDeclaredConstructors": true
   },
   {
-    "name": "org.h2.Driver",
+    "name": "org.springframework.messaging.simp.stomp.StompHeaderAccessor",
     "allDeclaredFields": true,
     "allDeclaredMethods": true,
     "allDeclaredConstructors": true
