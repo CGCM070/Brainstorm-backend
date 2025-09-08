@@ -1,4 +1,4 @@
-# ---------- Etapa de construcción GraalVM Native ----------
+# ---------- Etapa de build GraalVM ----------
 FROM ghcr.io/graalvm/native-image-community:17 AS build
 
 WORKDIR /app
@@ -19,24 +19,24 @@ COPY src src
 # Compilar aplicación nativa
 RUN ./mvnw -Pnative clean compile spring-boot:process-aot native:compile-no-fork -DskipTests
 
-# Verificar que el binario se creó correctamente (sin usar 'file')
+# Verificar binario
 RUN ls -la /app/target/Brainstorm && test -x /app/target/Brainstorm
 
-# ---------- Etapa de runtime Alpine ----------
-FROM alpine:3.18
-RUN apk --no-cache add \
-        ca-certificates \
-        zlib \
-        && addgroup -S appgroup \
-        && adduser -S -G appgroup appuser
+
+# ---------- Etapa runtime Debian ----------
+FROM debian:bookworm-slim
+
+# Crear usuario no-root
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 
 USER appuser
 WORKDIR /app
 
-# Copiar el binario con ruta absoluta y verificar
-COPY --from=build --chown=appuser:appgroup /app/target/Brainstorm /app/app
-RUN ls -la /app/ && test -x /app/app
+# Copiar binario compilado
+COPY --from=build /app/target/Brainstorm /app/app
+RUN chmod +x /app/app && [ -x /app/app ]
 
 EXPOSE 8080
 ENV SPRING_PROFILES_ACTIVE=prod
+
 ENTRYPOINT ["/app/app"]

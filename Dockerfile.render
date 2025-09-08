@@ -1,18 +1,13 @@
-# Usar la imagen pre-compilada desde GitHub Container Registry
+# Usar la imagen pre-compilada con Debian runtime
 FROM ghcr.io/cgcm070/brainstorm-backend:docker-startup-native
 
-# Asegurar que el directorio de trabajo es correcto
 WORKDIR /app
 
-# Verificar que el binario existe y configurar variables para Render
-ENV PORT=${PORT:-8080}
-ENV SPRING_PROFILES_ACTIVE=prod
+# Verificar que el binario existe y tiene permisos de ejecución (opcional)
+RUN [ -x /app/app ]
 
-# Verificar que el binario existe (sin chmod innecesario)
-RUN ls -la /app/ && test -x /app/app
-
-# Render requiere que el puerto sea configurable
+# Puerto dinámico que asigna Render
 EXPOSE $PORT
 
-# CRÍTICO: Usar CMD en lugar de ENTRYPOINT para que Render pueda configurar el puerto
-CMD ["/app/app", "--server.port=${PORT}"]
+# Ejecutar la aplicación nativa
+ENTRYPOINT ["/app/app"]
