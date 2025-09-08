@@ -38,3 +38,4 @@ build/
 ### VS Code ###
 .vscode/
 /info.md
+/.github/LLM_instructions.md
