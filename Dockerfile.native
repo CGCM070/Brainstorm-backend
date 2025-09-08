@@ -16,7 +16,11 @@ RUN ./mvnw dependency:go-offline -B
 # Copiar código fuente
 COPY src src
 
+# Compilar aplicación nativa
 RUN ./mvnw -Pnative clean compile spring-boot:process-aot native:compile-no-fork -DskipTests
+
+# Verificar que el binario se creó correctamente
+RUN ls -la /app/target/ && file /app/target/Brainstorm
 
 # ---------- Etapa de runtime Alpine ----------
 FROM alpine:3.18
@@ -28,7 +32,11 @@ RUN apk --no-cache add \
 
 USER appuser
 WORKDIR /app
-COPY --from=build --chown=appuser:appgroup /app/target/Brainstorm app
+
+# Copiar el binario con ruta absoluta y verificar
+COPY --from=build --chown=appuser:appgroup /app/target/Brainstorm /app/app
+RUN ls -la /app/ && file /app/app && chmod +x /app/app
+
 EXPOSE 8080
 ENV SPRING_PROFILES_ACTIVE=prod
-ENTRYPOINT ["./app"]
+ENTRYPOINT ["/app/app"]
