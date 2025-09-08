@@ -1,0 +1,8 @@
+# Usar la imagen pre-compilada desde GitHub Container Registry
+FROM ghcr.io/cgcm070/brainstorm-backend:docker-startup-native
+
+# Render requiere que el puerto sea configurable
+EXPOSE $PORT
+
+# Ejecutar aplicación nativa
+ENTRYPOINT ["./app"]

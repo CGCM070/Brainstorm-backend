@@ -4,6 +4,12 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+target/**/Brainstorm
+*.exe
+
+# Docker build cache
+.docker/
+
 ### STS ###
 .apt_generated
 .classpath
