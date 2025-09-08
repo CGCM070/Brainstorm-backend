@@ -1,42 +1,35 @@
-# ---------- Etapa de build GraalVM ----------
+# ---------- Etapa de construcción GraalVM Native ----------
 FROM ghcr.io/graalvm/native-image-community:17 AS build
 
 WORKDIR /app
 
-# Copiar archivos de configuración Maven
 COPY pom.xml .
 COPY mvnw .
 COPY .mvn .mvn
-
 RUN chmod +x mvnw
 
-# Descargar dependencias
 RUN ./mvnw dependency:go-offline -B
 
-# Copiar código fuente
 COPY src src
 
-# Compilar aplicación nativa
 RUN ./mvnw -Pnative clean compile spring-boot:process-aot native:compile-no-fork -DskipTests
 
-# Verificar binario
+# Verificar que el binario se creó correctamente (solo en build)
 RUN ls -la /app/target/Brainstorm && test -x /app/target/Brainstorm
 
+# ---------- Etapa de runtime Debian distroless ----------
+FROM debian:bookworm-slim AS runtime
 
-# ---------- Etapa runtime Debian ----------
-FROM debian:bookworm-slim
-
-# Crear usuario no-root
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 
 USER appuser
 WORKDIR /app
 
-# Copiar binario compilado
+# Copiar binario desde build
 COPY --from=build /app/target/Brainstorm /app/app
-RUN chmod +x /app/app && [ -x /app/app ]
 
+# EXPOSE puerto
 EXPOSE 8080
-ENV SPRING_PROFILES_ACTIVE=prod
 
+# Ejecutar binario
 ENTRYPOINT ["/app/app"]

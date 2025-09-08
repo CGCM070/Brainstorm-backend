@@ -1,13 +1,16 @@
-# Usar la imagen pre-compilada con Debian runtime
+# Usar la imagen precompilada nativa basada en Debian
 FROM ghcr.io/cgcm070/brainstorm-backend:docker-startup-native
 
+# Cambiar al directorio de trabajo correcto
 WORKDIR /app
 
-# Verificar que el binario existe y tiene permisos de ejecución (opcional)
-RUN [ -x /app/app ]
+# No necesitamos chmod, el binario ya tiene permisos de ejecución
 
-# Puerto dinámico que asigna Render
+# Verificar que el binario existe (opcional)
+RUN ls -la /app/
+
+# Render requiere que el puerto sea configurable
 EXPOSE $PORT
 
-# Ejecutar la aplicación nativa
+# Ejecutar aplicación nativa con ruta absoluta
 ENTRYPOINT ["/app/app"]
