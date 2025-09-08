@@ -119,28 +119,13 @@
                         </exclude>
                     </excludes>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>process-aot</id>
-                        <goals>
-                            <goal>process-aot</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <!-- REMOVIDA la ejecución global de process-aot -->
             </plugin>
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
                 <version>${native.maven.plugin.version}</version>
                 <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>add-reachability-metadata</id>
-                        <goals>
-                            <goal>add-reachability-metadata</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <imageName>Brainstorm</imageName>
                     <mainClass>${main.class}</mainClass>
@@ -154,11 +139,17 @@
                         <buildArg>--install-exit-handlers</buildArg>
                         <buildArg>--report-unsupported-elements-at-runtime</buildArg>
                         <buildArg>--allow-incomplete-classpath</buildArg>
-                        <buildArg>--enable-preview</buildArg>
                         <buildArg>-H:+ReportExceptionStackTraces</buildArg>
-                        <buildArg>-H:ConfigurationFileDirectories=${project.basedir}/src/main/resources/META-INF/native-image</buildArg>
                     </buildArgs>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>add-reachability-metadata</id>
+                        <goals>
+                            <goal>add-reachability-metadata</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -166,6 +157,9 @@
     <profiles>
         <profile>
             <id>native</id>
+            <properties>
+                <spring-boot.build-image.skip>true</spring-boot.build-image.skip>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -173,6 +167,12 @@
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
                             <mainClass>${main.class}</mainClass>
+                            <excludes>
+                                <exclude>
+                                    <groupId>org.projectlombok</groupId>
+                                    <artifactId>lombok</artifactId>
+                                </exclude>
+                            </excludes>
                         </configuration>
                         <executions>
                             <execution>
@@ -189,6 +189,13 @@
                         <configuration>
                             <imageName>Brainstorm</imageName>
                             <mainClass>${main.class}</mainClass>
+                            <buildArgs>
+                                <buildArg>--no-fallback</buildArg>
+                                <buildArg>--install-exit-handlers</buildArg>
+                                <buildArg>--report-unsupported-elements-at-runtime</buildArg>
+                                <buildArg>--allow-incomplete-classpath</buildArg>
+                                <buildArg>-H:+ReportExceptionStackTraces</buildArg>
+                            </buildArgs>
                         </configuration>
                         <executions>
                             <execution>
