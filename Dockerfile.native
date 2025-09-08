@@ -18,11 +18,17 @@ COPY src src
 
 RUN ./mvnw -Pnative clean compile spring-boot:process-aot native:compile-no-fork -DskipTests
 
-# ---------- Etapa de runtime minimalista ----------
-FROM gcr.io/distroless/cc-debian12
-USER nonroot:nonroot
+# ---------- Etapa de runtime Alpine ----------
+FROM alpine:3.18
+RUN apk --no-cache add \
+        ca-certificates \
+        zlib \
+        && addgroup -S appgroup \
+        && adduser -S -G appgroup appuser
+
+USER appuser
 WORKDIR /app
-COPY --from=build --chown=nonroot:nonroot /app/target/Brainstorm app
+COPY --from=build --chown=appuser:appgroup /app/target/Brainstorm app
 EXPOSE 8080
 ENV SPRING_PROFILES_ACTIVE=prod
 ENTRYPOINT ["./app"]
