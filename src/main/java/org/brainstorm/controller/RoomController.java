@@ -1,6 +1,7 @@
 package org.brainstorm.controller;
 
 import jakarta.validation.Valid;
+import org.brainstorm.config.RequiresAuth;
 import org.brainstorm.model.Rooms;
 import org.brainstorm.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ public class RoomController {
             @PathVariable Long userId,
             @RequestBody @Valid Rooms room) {
         Rooms created = roomService.createRoomWithUser(userId, room);
+
+
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -55,11 +58,13 @@ public class RoomController {
     }
 
     @DeleteMapping("/{id}")
+    @RequiresAuth
     public void deleteRoom (@PathVariable Long id) {
         roomService.deleteRoom(id);
     }
 
     @DeleteMapping("/user/{userId}")
+    @RequiresAuth
     public ResponseEntity<Void> removeUserFromRoom( @PathVariable Long userId) {
         roomService.removeUserFromRoom( userId);
         return ResponseEntity.ok().build();

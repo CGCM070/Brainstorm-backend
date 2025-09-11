@@ -20,6 +20,8 @@ public class RoomService {
     private RoomsRepository roomsRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SessionTokenService sessionTokenService;
 
     public List<Rooms> getAllRooms() {
         return roomsRepository.findAll();
@@ -39,6 +41,8 @@ public class RoomService {
     public Rooms createRoomWithUser(Long userId, Rooms room) {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id: " + userId));
+
+
         room.setCreatedBy(user.getUsername());
         room.setCreatedAt(LocalDateTime.now());
         room.getUsers().add(user);
