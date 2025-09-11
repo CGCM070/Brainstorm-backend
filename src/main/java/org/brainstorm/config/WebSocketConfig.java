@@ -15,6 +15,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // Habilitar un broker simple en memoria para enviar mensajes a clientes
         config.enableSimpleBroker("/topic");
 
+
         // Prefijo para mensajes que van dirigidos al servidor
         config.setApplicationDestinationPrefixes("/app");
     }
