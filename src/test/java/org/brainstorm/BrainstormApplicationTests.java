@@ -1,5 +1,6 @@
 package org.brainstorm;
 
+import org.brainstorm.dto.IdeaVoteResponseDto;
 import org.brainstorm.model.Ideas;
 import org.brainstorm.service.VoteService;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,15 +96,14 @@ class BrainstormApplicationTests {
 
             // When - Crear idea y votar
             Ideas friendIdea = utils.createTestIdea("FrostIdea here", "We need to use C4", user2.getId(), room.getId());
-//            Ideas votedIdea = voteService.votarIdea(friendIdea.getId(), user1.getId(), 1);
+            IdeaVoteResponseDto votedIdea = voteService.votarIdea(friendIdea.getId(), user1.getId(), 1);
 
             // When - Crear comentario
             utils.createTestComment("yess sr", friendIdea.getId(), user1.getId());
 
             // Then - Verificaciones
-//            assertFalse(room.getIdeas().isEmpty());
-//            assertEquals(user2.getUsername(), votedIdea.getAuthor());
-//            assertEquals(1, votedIdea.getTotalVotes());
+            assertFalse(room.getIdeas().isEmpty());
+            assertEquals(1, votedIdea.getTotalVotes());
         });
     }
 
@@ -144,11 +144,9 @@ class BrainstormApplicationTests {
             assertEquals(0, idea.getVotes().size());
 
             // When - Votar usando VoteService
-//            Ideas votedIdea = voteService.votarIdea(idea.getId(), setup.user1.getId(), 1);
-//
-//            // Then - Verificar resultado
-//            assertEquals(1, votedIdea.getTotalVotes());
-//            assertEquals(1, votedIdea.getVotes().size());
+            IdeaVoteResponseDto votedIdea = voteService.votarIdea(idea.getId(), setup.user1.getId(), 1);
+            // Then - Verificar resultado
+            assertEquals(1, votedIdea.getTotalVotes());
         });
     }
 }
