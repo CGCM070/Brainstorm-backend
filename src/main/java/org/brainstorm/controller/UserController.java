@@ -1,7 +1,10 @@
 package org.brainstorm.controller;
 
 import jakarta.validation.Valid;
+import org.brainstorm.config.RequiresAuth;
+import org.brainstorm.dto.UserResponseDto;
 import org.brainstorm.model.Users;
+import org.brainstorm.service.SessionTokenService;
 import org.brainstorm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private SessionTokenService sessionTokenService;
 
     @GetMapping("")
     public ResponseEntity<List<Users>> getAllRooms() {
@@ -24,12 +29,15 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Users>createUser(@RequestBody @Valid Users user){
+    public ResponseEntity<UserResponseDto>createUser(@RequestBody @Valid Users user){
         Users createdUser = userService.create(user);
-        return ResponseEntity.ok(createdUser);
+        String token = sessionTokenService.generateTokenForUser(createdUser.getId());
+        UserResponseDto responseDto = new UserResponseDto(createdUser, token);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping("/{id}")
+    @RequiresAuth
     public ResponseEntity<Users> updateUsername
             (@PathVariable Long id, @RequestBody @Valid Users user) {
         Users updatedUser = userService.updateUsername(id, user);
