@@ -1,6 +1,7 @@
 package org.brainstorm.service;
 
 import jakarta.transaction.Transactional;
+import org.brainstorm.dto.IdeaVoteResponseDto;
 import org.brainstorm.exception.EntityNotFoundException;
 import org.brainstorm.model.Ideas;
 import org.brainstorm.model.Rooms;
@@ -31,7 +32,7 @@ public class VoteService {
     private WebSocketService webSocketService;
 
     @Transactional
-    public Ideas votarIdea(Long ideaId, Long userId, int value) {
+    public IdeaVoteResponseDto votarIdea(Long ideaId, Long userId, int value) {
         // Validaciones tempranas
         validateVoteValue(value);
 
@@ -47,7 +48,7 @@ public class VoteService {
         // Notificar via WebSocket
         webSocketService.notifyIdeaVoted(idea.getRoom().getCode(), ideaId, updatedIdea, user.getUsername());
 
-        return updatedIdea;
+        return new IdeaVoteResponseDto(updatedIdea.getId(), updatedIdea.getTitle(), updatedIdea.getTotalVotes());
     }
 
     private void validateVoteValue(int value) {

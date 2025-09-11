@@ -1,6 +1,6 @@
 package org.brainstorm.controller;
 
-import org.brainstorm.model.Ideas;
+import org.brainstorm.dto.IdeaVoteResponseDto;
 import org.brainstorm.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +14,11 @@ public class VoteController {
     private VoteService voteService;
 
     @PostMapping("/idea/{ideaId}/user/{userId}")
-    public ResponseEntity<Ideas> votarIdea(
+    public ResponseEntity<IdeaVoteResponseDto> votarIdea(
             @PathVariable Long ideaId,
             @PathVariable Long userId,
             @RequestParam int value) {
-        Ideas updatedIdea = voteService.votarIdea(ideaId, userId, value);
-        return ResponseEntity.ok(updatedIdea);
+        IdeaVoteResponseDto result = voteService.votarIdea(ideaId, userId, value);
+        return ResponseEntity.ok(result);
     }
 }
