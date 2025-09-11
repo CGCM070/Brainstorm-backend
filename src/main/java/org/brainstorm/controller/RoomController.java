@@ -68,6 +68,7 @@ public class RoomController {
     public ResponseEntity<Void> removeUserFromRoom( @PathVariable Long userId) {
         roomService.removeUserFromRoom( userId);
         return ResponseEntity.ok().build();
+
     }
 
 }
