@@ -2,7 +2,6 @@ package org.brainstorm.controller;
 
 import org.brainstorm.dto.IdeaVoteResponseDto;
 import org.brainstorm.service.VoteService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,8 +9,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/api/votes")
 public class VoteController {
 
-    @Autowired
-    private VoteService voteService;
+    private final VoteService voteService;
+
+    public VoteController(VoteService voteService) {
+        this.voteService = voteService;
+    }
 
     @PostMapping("/idea/{ideaId}/user/{userId}")
     public ResponseEntity<IdeaVoteResponseDto> votarIdea(

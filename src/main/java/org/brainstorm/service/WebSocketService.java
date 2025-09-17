@@ -6,7 +6,6 @@ import org.brainstorm.dto.IdeaWebSocketDto;
 import org.brainstorm.dto.CommentWebSocketDto;
 import org.brainstorm.model.Ideas;
 import org.brainstorm.model.Comments;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,8 +15,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Service
 public class WebSocketService {
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
+    public WebSocketService(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
 
     // Map para rastrear usuarios conectados por sala
     // roomCode -> Set<username>

@@ -10,7 +10,6 @@ import org.brainstorm.model.Votes;
 import org.brainstorm.repository.IdeaRepository;
 import org.brainstorm.repository.UserRepository;
 import org.brainstorm.repository.VoteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -19,17 +18,21 @@ import java.util.Optional;
 @Service
 public class VoteService {
 
-    @Autowired
-    private VoteRepository voteRepository;
+    private final VoteRepository voteRepository;
+    private final IdeaRepository ideaRepository;
+    private final UserRepository userRepository;
+    private final WebSocketService webSocketService;
 
-    @Autowired
-    private IdeaRepository ideaRepository;
+    public VoteService(VoteRepository voteRepository,
+                       IdeaRepository ideaRepository,
+                       UserRepository userRepository,
+                       WebSocketService webSocketService) {
+        this.voteRepository = voteRepository;
+        this.ideaRepository = ideaRepository;
+        this.userRepository = userRepository;
+        this.webSocketService = webSocketService;
+    }
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private WebSocketService webSocketService;
 
     @Transactional
     public IdeaVoteResponseDto votarIdea(Long ideaId, Long userId, int value) {

@@ -8,7 +8,6 @@ import org.brainstorm.model.Users;
 import org.brainstorm.repository.CommentRepository;
 import org.brainstorm.repository.IdeaRepository;
 import org.brainstorm.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,14 +16,21 @@ import java.util.List;
 @Service
 public class CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
-    @Autowired
-    private IdeaRepository ideaRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private WebSocketService webSocketService;
+    private final CommentRepository commentRepository;
+    private final IdeaRepository ideaRepository;
+    private final UserRepository userRepository;
+    private final WebSocketService webSocketService;
+
+    public CommentService(CommentRepository commentRepository,
+                          IdeaRepository ideaRepository,
+                          UserRepository userRepository,
+                          WebSocketService webSocketService) {
+        this.commentRepository = commentRepository;
+        this.ideaRepository = ideaRepository;
+        this.userRepository = userRepository;
+        this.webSocketService = webSocketService;
+    }
+
 
     public List<Comments> getAllComments() {
         return commentRepository.findAll();
@@ -62,7 +68,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Comments updateComment(Long id,Long userId, Comments comment) {
+    public Comments updateComment(Long id, Long userId, Comments comment) {
         Comments existingComment = commentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + id));
 
@@ -78,10 +84,10 @@ public class CommentService {
 
         // Notificar via WebSocket
         webSocketService.notifyCommentUpdated(
-            existingComment.getIdea().getRoom().getCode(),
-            existingComment.getIdea().getId(),
-            updatedComment,
-            user.getUsername()
+                existingComment.getIdea().getRoom().getCode(),
+                existingComment.getIdea().getId(),
+                updatedComment,
+                user.getUsername()
         );
 
         return updatedComment;

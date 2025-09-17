@@ -3,7 +3,6 @@ package org.brainstorm.controller;
 import jakarta.validation.Valid;
 import org.brainstorm.model.Comments;
 import org.brainstorm.service.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import java.util.List;
 @RequestMapping("/v1/api/comments")
 public class CommentController {
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @GetMapping("")
     public ResponseEntity<List<Comments>> getAllComments() {

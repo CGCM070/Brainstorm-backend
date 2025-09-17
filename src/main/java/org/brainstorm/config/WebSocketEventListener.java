@@ -1,7 +1,6 @@
 package org.brainstorm.config;
 
 import org.brainstorm.service.WebSocketService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
@@ -11,8 +10,10 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Component
 public class WebSocketEventListener {
 
-    @Autowired
-    private WebSocketService webSocketService;
+    private final WebSocketService webSocketService;
+    public WebSocketEventListener(WebSocketService webSocketService) {
+        this.webSocketService = webSocketService;
+    }
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {

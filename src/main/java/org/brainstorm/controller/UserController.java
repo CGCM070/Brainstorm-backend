@@ -3,7 +3,6 @@ package org.brainstorm.controller;
 import jakarta.validation.Valid;
 import org.brainstorm.model.Users;
 import org.brainstorm.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,11 @@ import java.util.List;
 
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("")
     public ResponseEntity<List<Users>> getAllRooms() {

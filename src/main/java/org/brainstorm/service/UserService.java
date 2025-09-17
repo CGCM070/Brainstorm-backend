@@ -3,7 +3,6 @@ package org.brainstorm.service;
 import jakarta.transaction.Transactional;
 import org.brainstorm.model.Users;
 import org.brainstorm.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,8 +11,11 @@ import java.util.List;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public List<Users> getAll () {
         return userRepository.findAll();

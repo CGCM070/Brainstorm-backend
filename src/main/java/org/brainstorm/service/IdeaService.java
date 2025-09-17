@@ -8,7 +8,6 @@ import org.brainstorm.model.Users;
 import org.brainstorm.repository.IdeaRepository;
 import org.brainstorm.repository.RoomsRepository;
 import org.brainstorm.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,26 +17,31 @@ import java.time.Instant;
 @Service
 public class IdeaService {
 
-    @Autowired
-    private IdeaRepository ideaRepository;
-    @Autowired
-    private RoomsRepository roomsRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private WebSocketService webSocketService;
+
+    private final IdeaRepository ideaRepository;
+    private final RoomsRepository roomsRepository;
+    private final UserRepository userRepository;
+    private final WebSocketService webSocketService;
+
+    public IdeaService(IdeaRepository ideaRepository, RoomsRepository roomsRepository, UserRepository userRepository, WebSocketService webSocketService) {
+        this.ideaRepository = ideaRepository;
+        this.roomsRepository = roomsRepository;
+        this.userRepository = userRepository;
+        this.webSocketService = webSocketService;
+    }
+
 
     public Page<Ideas> getAllIdeas(Pageable pageable) {
         return ideaRepository.findAll(pageable);
     }
 
     @Transactional
-    public Ideas createIdea(Ideas idea, Long  userId, Long roomId) {
+    public Ideas createIdea(Ideas idea, Long userId, Long roomId) {
         Rooms room = roomsRepository.findById(roomId).
                 orElseThrow(() -> new EntityNotFoundException("Sala no encontrada con id : " + roomId));
 
         Users user = userRepository.findById(userId).orElseThrow(
-                () ->  new EntityNotFoundException("Usuario no econtrado con id : " + userId)
+                () -> new EntityNotFoundException("Usuario no econtrado con id : " + userId)
         );
 
 

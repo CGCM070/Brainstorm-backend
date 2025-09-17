@@ -1,7 +1,6 @@
 package org.brainstorm.controller;
 
 import org.brainstorm.service.WebSocketService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -12,8 +11,11 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 @Controller
 public class WebSocketController {
 
-    @Autowired
-    private WebSocketService webSocketService;
+    private final WebSocketService webSocketService;
+
+    public WebSocketController(WebSocketService webSocketService) {
+        this.webSocketService = webSocketService;
+    }
 
     @MessageMapping("/room/{roomCode}/connect")
     public void userConnect(@DestinationVariable String roomCode,

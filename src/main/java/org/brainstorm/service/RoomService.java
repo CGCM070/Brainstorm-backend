@@ -6,7 +6,6 @@ import org.brainstorm.model.Rooms;
 import org.brainstorm.model.Users;
 import org.brainstorm.repository.RoomsRepository;
 import org.brainstorm.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,10 +15,14 @@ import java.util.List;
 public class RoomService {
 
 
-    @Autowired
-    private RoomsRepository roomsRepository;
-    @Autowired
-    private UserRepository userRepository;
+
+    private final RoomsRepository roomsRepository;
+    private final UserRepository userRepository;
+
+    public RoomService(RoomsRepository roomsRepository, UserRepository userRepository) {
+        this.roomsRepository = roomsRepository;
+        this.userRepository = userRepository;
+    }
 
     public List<Rooms> getAllRooms() {
         return roomsRepository.findAll();

@@ -3,7 +3,6 @@ package org.brainstorm.controller;
 import jakarta.validation.Valid;
 import org.brainstorm.model.Rooms;
 import org.brainstorm.service.RoomService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +13,11 @@ import java.util.List;
 @RequestMapping("/v1/api/rooms")
 public class RoomController {
 
-    @Autowired
-    private RoomService roomService;
+    private final RoomService roomService;
 
+    public RoomController(RoomService roomService) {
+        this.roomService = roomService;
+    }
 
     @GetMapping("")
     public ResponseEntity<List<Rooms>> getAllRooms() {

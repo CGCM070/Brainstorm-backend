@@ -3,7 +3,6 @@ package org.brainstorm.controller;
 import jakarta.validation.Valid;
 import org.brainstorm.model.Ideas;
 import org.brainstorm.service.IdeaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -14,8 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/api/ideas")
 public class IdeaController {
 
-    @Autowired
-    private IdeaService ideaService;
+    private final IdeaService ideaService;
+
+    public IdeaController(IdeaService ideaService) {
+        this.ideaService = ideaService;
+    }
 
     @GetMapping("")
     public Page<Ideas> getAllIdeas(Pageable pageable) {
