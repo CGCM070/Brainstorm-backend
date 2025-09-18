@@ -1,7 +1,7 @@
 # Brainstorm Backend - Compilación Nativa con GraalVM
 
 ## 1. Contexto del Proyecto
-Este backend está desarrollado en Java con Spring Boot y se aloja en el plan gratuito de Render, que ofrece recursos limitados (0.1 CPU y 256 MB de RAM). El objetivo principal es optimizar los tiempos de arranque y el consumo de recursos, especialmente en entornos con restricciones severas.
+Este backend está desarrollado en Java con Spring Boot y se aloja en el plan gratuito de Render, que ofrece recursos limitados (0.1 CPU y 512 MB de RAM). El objetivo principal es optimizar los tiempos de arranque y el consumo de recursos, especialmente en entornos con restricciones severas.
 
 ## 2. Motivación: ¿Por qué GraalVM y Compilación Nativa?
 - GraalVM es una máquina virtual de alto rendimiento que permite compilar aplicaciones Java en binarios nativos.
