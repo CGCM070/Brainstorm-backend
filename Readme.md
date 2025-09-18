@@ -39,7 +39,7 @@ Este backend está desarrollado en Java con Spring Boot y se aloja en el plan gr
 - **Problema:** Render requiere un shell para ejecutar el binario, pero distroless no lo incluye.
 - **Solución:** Cambiar la imagen base a Debian.
 
-## 5. Descripción de los Dockerfiles
+## 5. Descripción de los Dockerfiles 
 
 - **Dockerfile:** Compila y ejecuta la aplicación como JAR tradicional. Base: gcr.io/distroless/java17. Uso recomendado solo para desarrollo o entornos sin restricciones de arranque.
 - **Dockerfile.optimized:** Utiliza Spring Boot Layered JARs y una imagen distroless para optimizar el tamaño y el arranque. Base: eclipse-temurin:21-jre-alpine y distroless. Requiere soporte para imágenes sin shell.
