@@ -2,9 +2,9 @@ name: Build Native Docker Image
 
 on:
   push:
-    branches: [ docker-startup-native ]
+    branches: [ master ]
   pull_request:
-    branches: [ docker-startup-native ]
+    branches: [ master ]
 
 env:
   REGISTRY: ghcr.io
